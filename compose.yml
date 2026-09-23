@@ -1,0 +1,23 @@
+version: '3.8'
+
+services:
+  openhome-novnc:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: openhome-novnc
+    ports:
+      - "6080:6080"  # noVNC web interface
+      - "5901:5901"  # VNC server (optional direct access)
+    volumes:
+      - ./saves:/data  # Mount your Pokemon save files here
+    environment:
+      - DISPLAY=:1
+    stdin_open: true
+    tty: true
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:6080/vnc.html"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
